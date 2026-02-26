@@ -1,0 +1,75 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Environment Variables (IMPORTANT - Never commit these!)
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+*.env
+alumni-portal-backend/.env
+alumni-portal-frontend/.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build outputs
+build/
+dist/
+*/build/
+*/dist/
+
+# Uploads (user-generated content)
+uploads/
+!uploads/.gitkeep
+alumni-portal-backend/uploads/*
+!alumni-portal-backend/uploads/avatars/.gitkeep
+!alumni-portal-backend/uploads/resumes/.gitkeep
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Python (for AI service)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+
+# Database
+*.sqlite
+*.db
+
+# Misc
+.eslintcache
+.npm
+.yarn-integrity
