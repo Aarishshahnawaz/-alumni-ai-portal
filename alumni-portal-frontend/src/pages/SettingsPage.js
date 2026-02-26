@@ -285,14 +285,14 @@ const SettingsPage = () => {
             <div className="space-y-4">
               {/* Email Display */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                   Email Address
                 </label>
                 <input
                   type="email"
                   value={user?.email || ''}
                   disabled
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600"
                 />
                 <p className="mt-1 text-xs text-gray-500">
                   Email cannot be changed
@@ -312,7 +312,7 @@ const SettingsPage = () => {
                   <form onSubmit={handleChangePassword} className="mt-4 space-y-4">
                     {/* Current Password */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                         Current Password
                       </label>
                       <div className="mt-1 relative">
@@ -326,7 +326,7 @@ const SettingsPage = () => {
                             })
                           }
                           required
-                          className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                          className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600"
                         />
                         <button
                           type="button"
@@ -349,7 +349,7 @@ const SettingsPage = () => {
 
                     {/* New Password */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                         New Password
                       </label>
                       <div className="mt-1 relative">
@@ -364,7 +364,7 @@ const SettingsPage = () => {
                           }
                           required
                           minLength={6}
-                          className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                          className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600"
                         />
                         <button
                           type="button"
@@ -387,7 +387,7 @@ const SettingsPage = () => {
 
                     {/* Confirm Password */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                         Confirm New Password
                       </label>
                       <div className="mt-1 relative">
@@ -401,7 +401,7 @@ const SettingsPage = () => {
                             })
                           }
                           required
-                          className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                          className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600"
                         />
                         <button
                           type="button"
@@ -474,13 +474,13 @@ const SettingsPage = () => {
             </h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                   Profile Visibility
                 </label>
                 <select
                   value={profileVisibility}
                   onChange={(e) => handleProfileVisibilityChange(e.target.value)}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                   disabled={savingStates.profileVisibility}
                 >
                   <option value="public">Public - Visible to everyone</option>

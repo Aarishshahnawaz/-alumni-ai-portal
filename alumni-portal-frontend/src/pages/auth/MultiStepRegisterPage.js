@@ -615,3 +615,4 @@ const MultiStepRegisterPage = () => {
 };
 
 export default MultiStepRegisterPage;
+

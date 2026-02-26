@@ -16,11 +16,8 @@ export const ThemeProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    // Remove both classes first
-    document.documentElement.classList.remove('light', 'dark');
-    // Add current theme class
-    document.documentElement.classList.add(theme);
-    // Save to localStorage
+    // Only save to localStorage, do NOT apply to document.documentElement
+    // Theme will be applied locally by ThemeLayout component
     localStorage.setItem('theme', theme);
   }, [theme]);
 

@@ -29,6 +29,10 @@ const ProfilePage = () => {
     skills: user?.profile?.skills || []
   });
   const [newSkill, setNewSkill] = useState('');
+  const [validationErrors, setValidationErrors] = useState({
+    linkedin: '',
+    github: ''
+  });
 
   // Calculate profile completion percentage
 
@@ -95,8 +99,39 @@ const ProfilePage = () => {
         github: user?.profile?.github || '',
         skills: user?.profile?.skills || []
       });
+      // Clear validation errors
+      setValidationErrors({ linkedin: '', github: '' });
     }
     setIsEditing(!isEditing);
+  };
+
+  const validateSocialLink = (field, value) => {
+    // If empty, clear error and return true
+    if (!value || value.trim() === '') {
+      setValidationErrors(prev => ({ ...prev, [field]: '' }));
+      return true;
+    }
+
+    const linkedinRegex = /^https:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9-_%]+\/?$/;
+    const githubRegex = /^https:\/\/(www\.)?github\.com\/[a-zA-Z0-9-]+\/?$/;
+
+    let isValid = false;
+    let errorMessage = '';
+
+    if (field === 'linkedin') {
+      isValid = linkedinRegex.test(value);
+      if (!isValid) {
+        errorMessage = 'Invalid LinkedIn URL. Format: https://linkedin.com/in/username';
+      }
+    } else if (field === 'github') {
+      isValid = githubRegex.test(value);
+      if (!isValid) {
+        errorMessage = 'Invalid GitHub URL. Format: https://github.com/username';
+      }
+    }
+
+    setValidationErrors(prev => ({ ...prev, [field]: errorMessage }));
+    return isValid;
   };
 
   const handleInputChange = (field, value) => {
@@ -105,6 +140,11 @@ const ProfilePage = () => {
       ...prev,
       [field]: value
     }));
+
+    // Validate social links on change
+    if (field === 'linkedin' || field === 'github') {
+      validateSocialLink(field, value);
+    }
   };
 
   const handleAddSkill = () => {
@@ -126,17 +166,20 @@ const ProfilePage = () => {
 
   const handleSave = async () => {
     try {
-      // Sanitize and validate URLs before sending
-      let linkedinUrl = editedProfile.linkedin?.trim() || '';
-      let githubUrl = editedProfile.github?.trim() || '';
-      
-      // Auto-prepend https:// if user enters just the domain/path
-      if (linkedinUrl && !linkedinUrl.startsWith('http')) {
-        linkedinUrl = 'https://linkedin.com/in/' + linkedinUrl.replace(/^(www\.)?linkedin\.com\/(in\/)?/, '');
+      // Validate social links before saving
+      const linkedinUrl = editedProfile.linkedin?.trim() || '';
+      const githubUrl = editedProfile.github?.trim() || '';
+
+      // Validate LinkedIn if provided
+      if (linkedinUrl && !validateSocialLink('linkedin', linkedinUrl)) {
+        toast.error('Please fix LinkedIn URL before saving');
+        return;
       }
-      
-      if (githubUrl && !githubUrl.startsWith('http')) {
-        githubUrl = 'https://github.com/' + githubUrl.replace(/^(www\.)?github\.com\//, '');
+
+      // Validate GitHub if provided
+      if (githubUrl && !validateSocialLink('github', githubUrl)) {
+        toast.error('Please fix GitHub URL before saving');
+        return;
       }
       
       const payload = {
@@ -162,6 +205,8 @@ const ProfilePage = () => {
       
       if (updateProfile.fulfilled.match(result)) {
         setIsEditing(false);
+        // Clear validation errors
+        setValidationErrors({ linkedin: '', github: '' });
         // Refresh profile to sync everywhere
         await dispatch(checkAuthStatus());
         toast.success('Profile updated successfully!');
@@ -286,14 +331,14 @@ const ProfilePage = () => {
                         value={editedProfile.firstName}
                         onChange={(e) => handleInputChange('firstName', e.target.value)}
                         placeholder="First Name"
-                        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600"
                       />
                       <input
                         type="text"
                         value={editedProfile.lastName}
                         onChange={(e) => handleInputChange('lastName', e.target.value)}
                         placeholder="Last Name"
-                        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600"
                       />
                     </div>
                     <input
@@ -301,7 +346,7 @@ const ProfilePage = () => {
                       value={editedProfile.currentPosition}
                       onChange={(e) => handleInputChange('currentPosition', e.target.value)}
                       placeholder="Current Position"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600"
                     />
                     <button
                       onClick={handleAvatarClick}
@@ -341,14 +386,14 @@ const ProfilePage = () => {
                 <div className="flex items-center space-x-3">
                   <MapPin className="h-5 w-5 text-gray-400" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">Location</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-200">Location</p>
                     {isEditing ? (
                       <input
                         type="text"
                         value={editedProfile.location}
                         onChange={(e) => handleInputChange('location', e.target.value)}
                         placeholder="City, Country"
-                        className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600"
                       />
                     ) : (
                       <p className="text-sm text-gray-600">{user?.profile?.location || 'Not specified'}</p>
@@ -361,7 +406,7 @@ const ProfilePage = () => {
                 <div className="flex items-center space-x-3">
                   <Building className="h-5 w-5 text-gray-400" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-200">
                       {user?.role === 'student' ? 'College / University' : 'Company'}
                     </p>
                     {isEditing ? (
@@ -370,7 +415,7 @@ const ProfilePage = () => {
                         value={editedProfile.currentCompany}
                         onChange={(e) => handleInputChange('currentCompany', e.target.value)}
                         placeholder={user?.role === 'student' ? 'College / University Name' : 'Company Name'}
-                        className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600"
                       />
                     ) : (
                       <p className="text-sm text-gray-600">{user?.profile?.currentCompany || 'Not specified'}</p>
@@ -381,7 +426,7 @@ const ProfilePage = () => {
                 <div className="flex items-center space-x-3">
                   <Calendar className="h-5 w-5 text-gray-400" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">Graduation Year</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-200">Graduation Year</p>
                     {isEditing ? (
                       <input
                         type="number"
@@ -390,7 +435,7 @@ const ProfilePage = () => {
                         placeholder="2024"
                         min="1950"
                         max={new Date().getFullYear() + 10}
-                        className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600"
                       />
                     ) : (
                       <p className="text-sm text-gray-600">{user?.profile?.graduationYear || 'Not specified'}</p>
@@ -407,21 +452,30 @@ const ProfilePage = () => {
                 <div className="flex items-center space-x-3">
                   <Linkedin className="h-5 w-5 text-blue-600" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">LinkedIn</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-200">LinkedIn</p>
                     {isEditing ? (
-                      <input
-                        type="url"
-                        value={editedProfile.linkedin}
-                        onChange={(e) => handleInputChange('linkedin', e.target.value)}
-                        placeholder="https://linkedin.com/in/username"
-                        className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                      />
+                      <div>
+                        <input
+                          type="text"
+                          value={editedProfile.linkedin}
+                          onChange={(e) => handleInputChange('linkedin', e.target.value)}
+                          placeholder="https://linkedin.com/in/username"
+                          className={`mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 ${
+                            validationErrors.linkedin
+                              ? 'border-red-500 focus:ring-red-500 dark:border-red-500'
+                              : 'border-gray-300 focus:ring-primary-500 dark:border-gray-600'
+                          }`}
+                        />
+                        {validationErrors.linkedin && (
+                          <p className="mt-1 text-xs text-red-600">{validationErrors.linkedin}</p>
+                        )}
+                      </div>
                     ) : user?.profile?.linkedin ? (
                       <a
                         href={user.profile.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-primary-600 hover:text-primary-700"
+                        className="text-sm text-primary-600 hover:text-primary-700 break-all"
                       >
                         View Profile
                       </a>
@@ -432,28 +486,32 @@ const ProfilePage = () => {
                 </div>
 
                 <div className="flex items-center space-x-3">
-                  <Github className="h-5 w-5 text-gray-900" />
+                  <Github className="h-5 w-5 text-gray-900 dark:text-gray-100" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">GitHub</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-200">GitHub</p>
                     {isEditing ? (
-                      <input
-                        type="url"
-                        value={editedProfile.github}
-                        onChange={(e) => {
-                          console.log('🔧 GitHub input onChange triggered:', e.target.value);
-                          handleInputChange('github', e.target.value);
-                        }}
-                        onFocus={() => console.log('🎯 GitHub input focused')}
-                        onBlur={() => console.log('👋 GitHub input blurred, value:', editedProfile.github)}
-                        placeholder="https://github.com/username"
-                        className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                      />
+                      <div>
+                        <input
+                          type="text"
+                          value={editedProfile.github}
+                          onChange={(e) => handleInputChange('github', e.target.value)}
+                          placeholder="https://github.com/username"
+                          className={`mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 ${
+                            validationErrors.github
+                              ? 'border-red-500 focus:ring-red-500 dark:border-red-500'
+                              : 'border-gray-300 focus:ring-primary-500 dark:border-gray-600'
+                          }`}
+                        />
+                        {validationErrors.github && (
+                          <p className="mt-1 text-xs text-red-600">{validationErrors.github}</p>
+                        )}
+                      </div>
                     ) : user?.profile?.github ? (
                       <a
                         href={user.profile.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-primary-600 hover:text-primary-700"
+                        className="text-sm text-primary-600 hover:text-primary-700 break-all"
                       >
                         View Profile
                       </a>
@@ -487,7 +545,7 @@ const ProfilePage = () => {
                     onChange={(e) => setNewSkill(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleAddSkill()}
                     placeholder="Add a skill (e.g., React, Node.js)"
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600"
                   />
                   <button
                     onClick={handleAddSkill}
@@ -564,7 +622,7 @@ const ProfilePage = () => {
                 onChange={(e) => handleInputChange('bio', e.target.value)}
                 placeholder="Tell us about yourself, your experience, and what you're passionate about..."
                 rows={6}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600"
               />
             ) : (
               <>

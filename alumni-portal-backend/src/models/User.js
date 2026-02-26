@@ -95,10 +95,11 @@ const userSchema = new mongoose.Schema({
       validate: {
         validator: function(v) {
           // Allow empty, null, or undefined
-          if (!v) return true;
-          return /^https?:\/\/(www\.)?linkedin\.com\/.+$/.test(v);
+          if (!v || v === '') return true;
+          // Strict validation: must match exact format
+          return /^https:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9-_%]+\/?$/.test(v);
         },
-        message: 'Please enter a valid LinkedIn URL'
+        message: 'Invalid LinkedIn URL. Format: https://linkedin.com/in/username'
       }
     },
     github: {
@@ -108,10 +109,11 @@ const userSchema = new mongoose.Schema({
       validate: {
         validator: function(v) {
           // Allow empty, null, or undefined
-          if (!v) return true;
-          return /^https?:\/\/(www\.)?github\.com\/.+$/.test(v);
+          if (!v || v === '') return true;
+          // Strict validation: must match exact format
+          return /^https:\/\/(www\.)?github\.com\/[a-zA-Z0-9-]+\/?$/.test(v);
         },
-        message: 'Please enter a valid GitHub URL'
+        message: 'Invalid GitHub URL. Format: https://github.com/username'
       }
     },
     socialLinks: {

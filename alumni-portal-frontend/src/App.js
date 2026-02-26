@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { checkAuthStatus } from './store/slices/authSlice';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import LoadingSpinner from './components/common/LoadingSpinner';
+import ThemeLayout from './components/layout/ThemeLayout';
 
 // Pages
 import LandingPage from './pages/LandingPage';
@@ -129,12 +130,14 @@ function App() {
           } 
         />
 
-        {/* Protected Routes */}
+        {/* Protected Routes - Wrapped with ThemeLayout */}
         <Route
           path="/dashboard/student"
           element={
             <ProtectedRoute allowedRoles={['student']}>
-              <StudentDashboard />
+              <ThemeLayout>
+                <StudentDashboard />
+              </ThemeLayout>
             </ProtectedRoute>
           }
         />
@@ -142,7 +145,9 @@ function App() {
           path="/dashboard/alumni"
           element={
             <ProtectedRoute allowedRoles={['alumni']}>
-              <AlumniDashboard />
+              <ThemeLayout>
+                <AlumniDashboard />
+              </ThemeLayout>
             </ProtectedRoute>
           }
         />
@@ -150,7 +155,9 @@ function App() {
           path="/dashboard/admin"
           element={
             <ProtectedRoute allowedRoles={['admin']}>
-              <AdminDashboard />
+              <ThemeLayout>
+                <AdminDashboard />
+              </ThemeLayout>
             </ProtectedRoute>
           }
         />
@@ -158,17 +165,21 @@ function App() {
           path="/admin/activity-logs"
           element={
             <ProtectedRoute allowedRoles={['admin']}>
-              <ActivityLogsPage />
+              <ThemeLayout>
+                <ActivityLogsPage />
+              </ThemeLayout>
             </ProtectedRoute>
           }
         />
         
-        {/* Shared Protected Routes */}
+        {/* Shared Protected Routes - Wrapped with ThemeLayout */}
         <Route
           path="/alumni"
           element={
             <ProtectedRoute allowedRoles={['student', 'alumni', 'admin']}>
-              <AlumniDirectory />
+              <ThemeLayout>
+                <AlumniDirectory />
+              </ThemeLayout>
             </ProtectedRoute>
           }
         />
@@ -176,7 +187,9 @@ function App() {
           path="/resume"
           element={
             <ProtectedRoute allowedRoles={['student', 'alumni']}>
-              <ResumeUpload />
+              <ThemeLayout>
+                <ResumeUpload />
+              </ThemeLayout>
             </ProtectedRoute>
           }
         />
@@ -184,7 +197,9 @@ function App() {
           path="/mentorship"
           element={
             <ProtectedRoute allowedRoles={['student', 'alumni']}>
-              <MentorshipPage />
+              <ThemeLayout>
+                <MentorshipPage />
+              </ThemeLayout>
             </ProtectedRoute>
           }
         />
@@ -192,7 +207,9 @@ function App() {
           path="/jobs"
           element={
             <ProtectedRoute allowedRoles={['student', 'alumni', 'admin']}>
-              <JobListings />
+              <ThemeLayout>
+                <JobListings />
+              </ThemeLayout>
             </ProtectedRoute>
           }
         />
@@ -200,7 +217,9 @@ function App() {
           path="/profile"
           element={
             <ProtectedRoute allowedRoles={['student', 'alumni', 'admin']}>
-              <ProfilePage />
+              <ThemeLayout>
+                <ProfilePage />
+              </ThemeLayout>
             </ProtectedRoute>
           }
         />
@@ -208,7 +227,9 @@ function App() {
           path="/settings"
           element={
             <ProtectedRoute allowedRoles={['student', 'alumni', 'admin']}>
-              <SettingsPage />
+              <ThemeLayout>
+                <SettingsPage />
+              </ThemeLayout>
             </ProtectedRoute>
           }
         />
